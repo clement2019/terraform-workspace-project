@@ -6,11 +6,39 @@ one could easily get lost and its only if you have proper naming convention that
 such as as shown below but we have default workspace already
 
 $ terraform workspace new stagging
+
 $ terraform workspace new production
 
 ### Projects Requirements
 First download and install the terraform using this link  
-Then download Aws cli to used to configure the IAM user credentails using this link
+As a first step, install terraform (see: https://www.terraform.io/downloads)) and select your machine version if its windows and if its mac you can select accordingly and install the requirements:
+
+Then download and install AWs CLI Installation requirements We support the AWS CLI on Microsoft-supported versions of 64-bit Windows.
+
+Admin rights to install software
+
+Install or update the AWS CLI To update your current installation of AWS CLI on Windows, download a new installer each time you update to overwrite previous versions. AWS CLI is updated regularly. To see when the latest version was released, see the AWS CLI changelog on GitHub.
+
+Download and run the AWS CLI MSI installer for Windows (64-bit):
+
+https://awscli.amazonaws.com/AWSCLIV2.msi
+
+Alternatively, you can run the msiexec command to run the MSI installer.
+
+C:> msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi For various parameters that can be used with msiexec, see msiexec on the Microsoft Docs website.
+
+To confirm the installation, open the Start menu, search for cmd to open a command prompt window, and at the command prompt use the aws --version command.
+
+C:> aws --version aws-cli/2.4.5 Python/3.8.8 Windows/10 exe/AMD64 prompt/off Then next once configured create maini.tf file in my vscode IDE and launch terraform and run the code below in:
+
+## Terraform Access Provisioing
+provider "aws" {
+
+profile ="myaws"
+region = "eu-west-2"
+}
+
+#### As seen above i worked within my aws account region
 
 ### Resources created and needed
  
@@ -28,14 +56,19 @@ and all its components that has to be created with it such as key_name, instance
 would be created inside the Ec2_module.tf file, as shown below 
 
 resource "aws_instance" "web-server" {
+
   ami           = var.ami
+  
   instance_type = "t2.micro"
+  
   key_name               = "${var.ec2_name}"
+  
   vpc_security_group_ids = ["${var.sg_id}"]
 
   tags = {
    
     Name = "web_server_${var.env_name}"
+    
    #Name="Ec2_name_instance_${module.shared_module.hamiidenv}"
   }
 }
@@ -44,6 +77,7 @@ To maintian proper refactoring some values that would have been hard coded, i cr
 with their defaults values where neccessary as shown below with code snippets
 
 variable "ami" {
+
 
   default = "ami-0a244485e2e4ffd03"
 
@@ -57,6 +91,7 @@ locals {
   env ="${terraform.workspace}"
 
   hamiidenv= {
+  
     default = "amiid_default"
     stagging = "amiid_stagging"
     production = "amiid_production"
